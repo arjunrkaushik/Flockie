@@ -1,9 +1,19 @@
 import './Glass.css'
 import { useState } from 'react'
 import axios from 'axios'
+import parse from "html-react-parser";
 import {abi,contractAddress} from './sc_config'
 import Web3 from 'web3'
 import UploadPage from './UploadPage'
+let myHtml=""
+  const tempFunc = () => {
+      let count = document.getElementById('gender').value;
+      console.log(count);
+      //let myHtml = '';
+      for(let i = 1; i <= count; i++) {
+          myHtml+="<br>Client " +i + " trained " + "<button type=\"submit\" className=\"glass__form__btn\"> Upload Data </button>";
+      }
+  }
 
 function Glass() {
   const [x, setx] = useState('')
@@ -49,6 +59,9 @@ function Glass() {
     // console.log(web3.eth.getAccounts())
   }
 
+
+
+
   return (
     <>
     {!train ?
@@ -90,7 +103,7 @@ function Glass() {
         </div>
 
         <div className="glass__form__group">
-          <button type="submit" className="glass__form__btn">
+          <button type="submit" className="glass__form__btn" onClick={() => tempFunc()}>
             Train
           </button>
         </div>
@@ -102,20 +115,12 @@ function Glass() {
      <div className="glass">
       <form className="glass__form">
         <h4>Upload Gradients</h4>
-        <div>Client0 trained</div>
-        
-        <div>Client1 trained</div>
-        
-        <div>Client2 trained</div>
-
-        <div className="glass__form__group">
-          <button onClick={() => sc()} type="submit" className="glass__form__btn">
-            Upload Data
-          </button>
+        <div>
+            {parse(myHtml)}
         </div>
       </form>
     </div>
-     
+
     }</>)
 }
 
