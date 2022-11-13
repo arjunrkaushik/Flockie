@@ -11,8 +11,13 @@ let myHtml=""
       console.log(count);
       //let myHtml = '';
       for(let i = 1; i <= count; i++) {
-          myHtml+="<br>Client " +i + " trained " + "<button type=\"submit\" className=\"glass__form__btn\"> Upload Data </button>";
+          myHtml+="<br>Client " +i + " trained ";
       }
+
+  }
+
+  const result = () => {
+    alert("Congratulations!");
   }
 
 function Glass() {
@@ -44,7 +49,7 @@ function Glass() {
         // reset()
       })
       .catch((error) => alert(`Error: ${error.message}`))
-      
+
   }
 
   const reset = () => {
@@ -64,62 +69,66 @@ function Glass() {
 
   return (
     <>
-    {!train ?
-    <div className="glass">
-      <form onSubmit={(e) => handleSubmit(e)} className="glass__form">
-        <h4>Train Clients</h4>
-        <div className="glass__form__group">
-          <input
-            id="gender"
-            className="glass__form__input"
-            placeholder="Number of Clients"
-            required
-            autoFocus
-            min="2"
-            // max="1"
-            pattern="[0-9]{0,1}"
-            title="Client count"
-            type="number"
-            value={x}
-            onChange={(e) => setx(e.target.value)}
-          />
-        </div>
+        {!train ?
+            <div className="glass">
+                <form onSubmit={(e) => handleSubmit(e)} className="glass__form">
+                    <h4>Train Clients</h4>
+                    <div className="glass__form__group">
+                        <input
+                            id="gender"
+                            className="glass__form__input"
+                            placeholder="Number of Clients"
+                            required
+                            autoFocus
+                            min="2"
+                            // max="1"
+                            pattern="[0-9]{0,1}"
+                            title="Client count"
+                            type="number"
+                            value={x}
+                            onChange={(e) => setx(e.target.value)}
+                        />
+                    </div>
 
-        <div className="glass__form__group">
-          <input
-            id="bsc"
-            className="glass__form__input"
-            placeholder="True or False"
-            required
-            // min="0"
-            // max="5"
-            type="bool"
-            title="First time?"
-            // pattern="[0-9]+([\.,][0-9]+)?"
-            // step="0.01"
-            value={first}
-            onChange={(e) => setfirst(e.target.value)}
-          />
-        </div>
+                    <div className="glass__form__group">
+                        <input
+                            id="bsc"
+                            className="glass__form__input"
+                            placeholder="True or False"
+                            required
+                            // min="0"
+                            // max="5"
+                            type="bool"
+                            title="First time?"
+                            // pattern="[0-9]+([\.,][0-9]+)?"
+                            // step="0.01"
+                            value={first}
+                            onChange={(e) => setfirst(e.target.value)}
+                        />
+                    </div>
 
-        <div className="glass__form__group">
-          <button type="submit" className="glass__form__btn" onClick={() => tempFunc()}>
-            Train
-          </button>
-        </div>
-      </form>
-    </div>
+                    <div className="glass__form__group">
+                        <button type="submit" className="glass__form__btn" onClick={() => tempFunc()}>
+                            Train
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-     :
+            :
 
-     <div className="glass">
-      <form className="glass__form">
-        <h4>Upload Gradients</h4>
-        <div>
-            {parse(myHtml)}
-        </div>
-      </form>
-    </div>
+            <div className="glass">
+                <form className="glass__form">
+                    <h4>Upload Gradients</h4>
+                    <div>
+                        {parse(myHtml)}
+                        <br></br>
+                        <button type="submit" className="glass__form__btn" onClick={() => result()}>
+                            Upload Data
+                        </button>
+                    </div>
+                </form>
+            </div>
 
     }</>)
 }
