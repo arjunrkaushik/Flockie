@@ -17,7 +17,7 @@ let myHtml=""
   }
 
   const result = () => {
-    alert("Congratulations!");
+    alert("Congratulations, weights uploaded");
   }
 
 function Glass() {
@@ -124,7 +124,7 @@ function Glass() {
                         {parse(myHtml)}
                         <br></br>
                         <button type="submit" className="glass__form__btn" onClick={() => result()}>
-                            Upload Data
+                            Train and Upload
                         </button>
                     </div>
                 </form>
