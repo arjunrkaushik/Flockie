@@ -1,11 +1,15 @@
 import './Glass.css'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { Routes, Route, useNavigate  } from 'react-router-dom'
 import axios from 'axios'
 import parse from "html-react-parser";
 import {abi,contractAddress} from './sc_config'
 import Web3 from 'web3'
 import UploadPage from './UploadPage'
+import Congrats from "./Congrats";
+
 let myHtml=""
+//let congrats=""
   const tempFunc = () => {
       let count = document.getElementById('gender').value;
       console.log(count);
@@ -16,15 +20,50 @@ let myHtml=""
 
   }
 
-  const result = () => {
-    alert("Congratulations, weights uploaded");
-  }
+  //const history = useHistory();
+
+//const navigateToCongrats = () => {
+    // 👇️ navigate to /contacts
+   // history.push("/Congrats");
+ // };
+
+  //const result = () => {
+  //  alert("Congratulations, weights uploaded");
+  //}
+//const Congrats = () => {
+            //alert("Congratulations, weights uploaded");
+    //congrats = "<p> HEAD </p>";
+
+//};
+//function Congrats(){
+   // return <h2>Contacts</h2>;
+//}
 
 function Glass() {
   const [x, setx] = useState('')
   const [first, setfirst] = useState('')
   const [train, setTrain] = useState(false)
   const [grads, setGrads] = useState('')
+
+
+
+  //const [active, setActive] = useState(false)
+
+ // function printCongrats(){
+     // setActive(Congrats)
+  //}
+//const navigate = useNavigate();
+
+//const navigateCongrats = () => {
+    // 👇️ navigate to /contacts
+   //navigate('./Congrats');
+ // };
+
+
+
+
+
+
 //   const [workex, setWorkex] = useState('')
 //   const [etest_p, setEtest_p] = useState('')
 //   const [msc, setMsc] = useState('')
@@ -41,7 +80,7 @@ function Glass() {
         // const msg = `weights: ${data.weights}`
         // alert(data)
         // upload(msg)
-        setGrads(data)
+        //setGrads(data)
         console.log(data.client0)
         console.log(data.client1)
         console.log(data.client1)
@@ -65,11 +104,8 @@ function Glass() {
   }
 
 
-
-
   return (
     <>
-        {!train ?
             <div className="glass">
                 <form onSubmit={(e) => handleSubmit(e)} className="glass__form">
                     <h4>Train Clients</h4>
@@ -115,22 +151,11 @@ function Glass() {
                 </form>
             </div>
 
-            :
+        {train && (         <div className="glass">
+                <h1>Congrats</h1>
+            </div>) }
 
-            <div className="glass">
-                <form className="glass__form">
-                    <h4>Upload Gradients</h4>
-                    <div>
-                        {parse(myHtml)}
-                        <br></br>
-                        <button type="submit" className="glass__form__btn" onClick={() => result()}>
-                            Train and Upload
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-    }</>)
+    </>)
 }
 
 export default Glass
