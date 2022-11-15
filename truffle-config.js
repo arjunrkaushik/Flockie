@@ -44,7 +44,7 @@
 // require('dotenv').config();
 // const { MNEMONIC, PROJECT_ID } = process.env;
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
   /**
@@ -68,6 +68,11 @@ module.exports = {
      host: "localhost",     // Localhost (default: none) 127.0.0.1
      port: 7545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
+    },
+    goerli: {
+      provider: () => new HDWalletProvider("adjust slice film trade super group admit rail post ocean animal two", "https://goerli.infura.io/v3/5e882437de844dd481b7cdc0939fdcda"),
+      network_id: "*",
+      gas: 30000000
     }
     //
     // An additional network, but with some advanced options…
