@@ -2,7 +2,7 @@ import './Glass.css'
 import { useState } from 'react'
 import axios from 'axios'
 import parse from "html-react-parser";
-import {abi,contractAddress} from './sc_config'
+import {abi_fedLearning,contractAddress_fedLearning, abi_flockie, contractAddress_flockie, FLK_wolf, FLK_elephant, FLK_tiger} from './sc_config'
 import Web3 from 'web3'
 import UploadPage from './UploadPage'
 
@@ -10,31 +10,19 @@ function Glass() {
   const [x, setx] = useState('')
   // const [first, setfirst] = useState('')
   const [train, setTrain] = useState(false)
-  const [server, setServer] = useState(false)
   const [approve, setApprove] = useState(false)
-
+  const [server, setServer] = useState(false)
+  const [update, setUpdate] = useState(false)
   
   const web3 = new Web3("http://localhost:7545")
-  const fedLearning = new web3.eth.Contract(abi,contractAddress) 
-   
-  
+  const fedLearning = new web3.eth.Contract(abi_fedLearning,contractAddress_fedLearning)
+  const flockie = new web3.eth.Contract(abi_flockie, contractAddress_flockie) 
 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     const params = { x }
     const data = await axios.post('http://localhost:8080/train', params)
-    console.log("Here", data.data.data)
-    // const web3 = new Web3(
-    //   new Web3.providers.HttpProvider(
-    //     'https://goerli.infura.io/v3/5e882437de844dd481b7cdc0939fdcda'
-    //   )
-    // );
-
-    // const signer = web3.eth.accounts.privateKeyToAccount(
-    //   'd7cabcce4d3d9fc9ecfa6b41c216bd503cdee72c56ede3a332fa73d91d4ca0e6'
-    // );
-    // web3.eth.accounts.wallet.add(signer);
     var accounts = []
     const account_addr = await web3.eth.getAccounts()
     console.log(account_addr)
@@ -69,13 +57,25 @@ function Glass() {
       payload.push(data)
     });
 
+    //Mint NFT
+    await flockie.methods.mintNFT(accounts[4], FLK_wolf).send({from:accounts[0], gas: 3000000});
+    await flockie.methods.mintNFT(accounts[5], FLK_elephant).send({from:accounts[0], gas: 3000000});
+    await flockie.methods.mintNFT(accounts[6], FLK_tiger).send({from:accounts[0], gas: 3000000});
+
     const data_agg = await axios.post('http://localhost:8080/aggregate', payload)
-  
     setServer(true)
-  
-    await fedLearning.methods.accuracyChecker(data_agg.data.data.hash, data_agg.data.data.accuracy).call().then((data) => {
-      setApprove(data)
-    })
+    await flockie.methods.vote(accounts[4], data_agg.data.data.accuracy[0]).send({from:accounts[0], gas: 3000000});
+    await flockie.methods.vote(accounts[5], data_agg.data.data.accuracy[1]).send({from:accounts[0], gas: 3000000});
+    await flockie.methods.vote(accounts[6], data_agg.data.data.accuracy[2]).send({from:accounts[0], gas: 3000000});
+
+    const upd = await flockie.methods.getVoteUpdate().call()
+
+    if(upd){
+      await fedLearning.methods.setServer(data_agg.data.data.hash).call().then((data) => {
+        setUpdate(true)
+        setApprove(data)
+      })
+    }
   }
 
   // const reset = () => {
@@ -144,7 +144,7 @@ function Glass() {
       </form>
     </div>}
     
-    {server && approve &&
+    {train && server && approve &&
       <div className="glass">
           <h4>Congratulations, your model has been approved!</h4>
       </div>}

@@ -2,31 +2,63 @@
 pragma solidity >=0.4.22 <0.9.0;
 pragma experimental ABIEncoderV2;
 
-contract FedLearning{
-    mapping(address => string) public client_weights;
-    address[] client_address;
-    string server;
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "./fedLearning.sol";
 
-    function sendWeights(address x, string memory y) public {
-        client_weights[x] = y;
-        client_address.push(x);
+contract Flockie is ERC721URIStorage {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+    mapping(address => bool) public isRegistered;
+    mapping(address => bool) public hasVoted;
+
+    uint voterCount = 0;
+    uint update = 0; 
+    uint noUpdate = 0;
+
+    constructor() ERC721("Flockie", "FLK") {}
+
+    // modifier onlyVoter() {
+    //     require(isRegistered[msg.sender] == true);
+    //     _;
+    // }
+
+    function mintNFT(address recipient, string memory tokenURI)
+        public
+        returns (uint256)
+    {
+        _tokenIds.increment();
+
+        uint256 newItemId = _tokenIds.current();
+        _mint(recipient, newItemId);
+        _setTokenURI(newItemId, tokenURI);
+        
+        isRegistered[recipient] = true;
+        hasVoted[recipient] = false;
+        voterCount += 1;
+
+        return newItemId;
     }
 
-    function getServer() public view returns(string memory){
-        return server;
+    function vote(address voter, uint acc) public payable {
+        assert(isRegistered[voter]==true); //voter == msg.sender
+        if(acc > 7500000){
+            update += 1;
+        }
+        else{
+            noUpdate += 1;
+        }
+        hasVoted[voter] = true;
     }
 
-    function getWeights(address a) public view returns(string memory){
-        return client_weights[a];
-    }    
-
-    function accuracyChecker(string memory z, uint acc) public returns (bool){
-        if(acc > 8000000){
-            server = z;
+    function getVoteUpdate() public view returns(bool){
+        assert(update + noUpdate == voterCount);
+        if(update > noUpdate){
             return true;
         }
         return false;
-    }    
+    }
 
 
 }

@@ -40,6 +40,7 @@ app.add_middleware(
 def read_root():
     return {"data": "Welcome to Flockie"}
 
+
 @app.post("/aggregate/")
 async def aggregate(request:Request):
     projectId = "2HWWSM26k2fOYJGFAiAxCsF2TRF"
@@ -83,7 +84,7 @@ async def aggregate(request:Request):
 
     server = Server()
     server.update_model(clients)
-    df = pd.read_csv('../model/framingham.csv')
+    df = pd.read_csv('../model/framingham_test.csv')
     # print(df.head())
     df = df.dropna()
     df.fillna(method='bfill', inplace=True)
@@ -91,7 +92,12 @@ async def aggregate(request:Request):
     y = df["TenYearCHD"]
     X = df.drop(columns=['TenYearCHD', 'education'], axis=1)
 
-    acc = server.test(X, y)
+    accuracy = list()
+    for i in range(3):
+        acc = server.test(X[int(i * len(X) / 3):int((i + 1) * len(X) / 3)], y[int(i * len(y) / 3):int((i + 1) * len(y) / 3)])
+        accuracy.append(int(acc*(10**5)))
+
+    # acc = server.test(X, y)
 
     server_grads=list()
     server_grads.append(server.model.coef_[0].tolist())
@@ -117,7 +123,7 @@ async def aggregate(request:Request):
     print("Server Hash:", server_hash)
     return {
         "data": {
-            "accuracy": int(acc*(10**5)),
+            "accuracy": accuracy,
             "hash": server_hash
         }
     }
